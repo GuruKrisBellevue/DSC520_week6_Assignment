@@ -1,0 +1,125 @@
+---
+title: "ASSIGNMENT 4"
+author: "Guruprasad Velikadu Krishnamoorthy"
+date: '2023-01-22'
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+bibliography: bibliography.bib
+---
+
+
+# Markdown Basics
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = NA)
+
+```
+
+## Favorite Foods
+1. Thai Pineapple Fried Rice
+1. Penne Pasta with Marina sauce
+1. Chipotle Veggie Bowl
+
+## Images
+![All Cases (Log Plot)](C:/Users/Gurup/GURU/Learning/Masters/Term_2/DSC520_T302_Statistics_for_Data_Science/Week_1/forked_example/dsc520_Week_1_Assignment_forkedExample/completed/assignment04/plots/10-all-cases-log.png)
+
+
+## Add a Quote
+    Life is what happens when you're busy making other plans. -John Lennon
+
+## Add an Equation
+
+$P(A \mid B)$ = $\frac{P(B \mid A) P(A) }{P(B)}$
+
+## Add a Footnote
+
+This is a footnote. ^[This is a footnote in R Markdown] 
+
+
+## Add Citations
+
+* R for Everyone [@lander2014r]
+
+* Discovering Statistics Using R [@field2012discovering]
+
+
+# Inline Code
+```{r include=FALSE}
+library(ggplot2)
+setwd("C:/Users/Gurup/GURU/Learning/Masters/Term_2/DSC520_T302_Statistics_for_Data_Science/Week_1/forked_example/dsc520_Week_1_Assignment_forkedExample")
+heights_df <- read.csv("data/r4ds/heights.csv")
+covid_df <- read.csv("data/nytimes/covid-19-data/us-states.csv")
+covid_df$date <- as.Date(covid_df$date)
+california_df <- covid_df[ which( covid_df$state == "California"), ]
+ny_df <- covid_df[which(covid_df$state=="New York"),]
+florida_df <- covid_df[which(covid_df$state=="Florida"),]
+```
+
+
+
+## NY Times COVID-19 Data
+```{r echo=FALSE}
+ggplot(data=florida_df, aes(x=date, group=1)) +
+  geom_line(aes(y = cases, colour = "Florida")) +
+  geom_line(data=ny_df, aes(y = cases,colour="New York")) +
+  geom_line(data=california_df, aes(y = cases, colour="California")) +
+  scale_colour_manual("",
+                      breaks = c("Florida", "New York","California"),
+                      values = c("darkred", "darkgreen", "steelblue")) +
+  xlab(" ") + ylab("Cases") + scale_y_log10()
+
+```
+
+
+## R4DS Height vs Earnings
+```{r echo=FALSE}
+
+ggplot(data = heights_df, aes(x = height, y = earn, col = sex)) +
+geom_point(size = 3) + ggtitle("Height vs. Earnings") + xlab("Height (Inches)") +
+ylab("Earnings (Dollars)")
+```
+
+
+# Tables
+
+## Knitr Table with Kable
+```{r echo=FALSE}
+library(knitr)
+name <- c("Aragon", "Bilbo", "Frodo", "Galadriel", "Sam", "Gandalf", "Legolas", "Sauron", "Gollum")
+race <- c("Men", "Hobbit", "Hobbit", "Elf", "Hobbit", "Maia", "Elf", "Maia", "Hobbit")
+in_fellowship <- c(TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE)
+ring_bearer <- c(FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE)
+age <- c(88, 129, 51, 7000, 36, 2019, 2931, 7052, 589)
+characters_df <- data.frame(name, race, in_fellowship, ring_bearer, age)
+knitr::kable(characters_df,caption="One Ring to Rule Them All")
+
+```
+
+
+## Pandoc Table
+### Building a pipe table
+
+
+| Name      | Race      | In Fellowship? | Is Ring Bearer? | Age    |
+|-----------|-----------|----------------|-----------------|-------:|
+| Aragon    | Men       | Yes            | No             | 88     |
+| Bilbo        | Hobbit    | No            | Yes            | 129    |
+| Frodo        | Hobbit   | Yes           | Yes            | 51     |
+| Sam      | Hobbit   | Yes           | Yes            | 36     |
+| Sauron    | Maia     | No            | Yes            | 7052   |
+
+
+### Building a Multiline table using Pandoc
+```{r echo=FALSE}
+library(pander)
+new_LOTR_df <- characters_df[c(1:3,5,8),]
+names(new_LOTR_df) <- c("Name","Race","In Fellowship?","Is Ring Bearer?","Age")
+new_LOTR_df$`In Fellowship?` <- ifelse(new_LOTR_df$`In Fellowship?`==TRUE,"Yes","No")
+new_LOTR_df$`Is Ring Bearer?` <- ifelse(new_LOTR_df$`Is Ring Bearer?`==TRUE,"Yes","No")
+rownames(new_LOTR_df) <- NULL
+panderOptions('table.alignment.default', 'left')
+pandoc.table(new_LOTR_df, style = 'multiline')
+```
+
+# References
